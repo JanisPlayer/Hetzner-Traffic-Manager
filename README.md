@@ -29,8 +29,9 @@ This script monitors the outgoing traffic of a Hetzner Cloud server. If the outg
 - Open `hetzner_traffic_manager.sh` and add your Hetzner API token and server ID in the configuration section:
 
    ```bash
-   API_TOKEN="your-api-token"
-   SERVER_ID="your-server-id"
+   API_TOKEN="your-api-token"        # Your Hetzner Cloud API token
+   SERVER_ID="your-server-id"        # The ID of the server to monitor
+   LIMIT_TB_OFFSET=-1                # Adjusts the included traffic down (-1) or up (+1) in TB
    ```
 
 ### Usage
@@ -62,3 +63,8 @@ This script monitors the outgoing traffic of a Hetzner Cloud server. If the outg
    ```bash
    crontab -u root -l > /tmp/tmp_crontab && echo "* * * * * /root/hetzner_traffic_manager.sh" >> /tmp/tmp_crontab
    crontab -u root /tmp/tmp_crontab && rm /tmp/tmp_crontab
+
+**Possible Improvements**:
+- Manage multiple servers returned by the API query and match them based on their IDs.
+- Apply the offset limit for each server individually, allowing for more flexible traffic monitoring across multiple servers.
+- Better handling of API errors.
