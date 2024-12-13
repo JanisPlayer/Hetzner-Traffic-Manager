@@ -12,25 +12,25 @@ LIMIT_BYTES_OFFSET=$((LIMIT_TB_OFFSET * 1024**4))/$((LIMIT_TB_OFFSET_FLOAT))
 # Function to get server information in JSON format
 function get_servers_json() {
     curl -s -H "Authorization: Bearer $API_TOKEN" \
-        "https://api.hetzner.cloud/v1/servers/#$SERVER_ID"
+        "https://api.hetzner.cloud/v1/servers/$SERVER_ID"
 }
 
 # Function to get the server's status
 function get_status() {
         echo $SERVERS_JSON | \
-        jq -r '.servers[].status'
+        jq -r '.server.status'
 }
 
 # Function to get outgoing traffic
 function get_traffic() {
         echo $SERVERS_JSON | \
-        jq -r '.servers[].outgoing_traffic'
+        jq -r '.server.outgoing_traffic'
 }
 
 # Function to get traffic limit
 function get_traffic_limit() {
         echo $SERVERS_JSON | \
-        jq -r '.servers[].included_traffic'
+        jq -r '.server.included_traffic'
 }
 
 # Function to shut down the server
