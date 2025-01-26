@@ -32,8 +32,12 @@ This script monitors the outgoing traffic of a Hetzner Cloud server. If the outg
    API_TOKEN="your-api-token"        # Your Hetzner Cloud API token
    SERVER_ID="your-server-id"        # The ID of the server to monitor
    LIMIT_TB_OFFSET=-1                # Adjusts the included traffic down (-1) or up (+1) in TB
+   LIMIT_GB_OFFSET=0                 # Fine-tune the traffic limit in GB (can adjust the value of LIMIT_TB_OFFSET)
    ```
-
+   Note: Ensure there is a sufficient buffer from the traffic limit because the Hetzner API does not update the total outgoing traffic in real-time. This delay can lead to inaccuracies if the buffer is too small.  
+   The values of `LIMIT_TB_OFFSET` and `LIMIT_GB_OFFSET` are used together to calculate the `LIMIT_BYTES_OFFSET`.  
+   Additionally, Bash natively does not support floating-point calculations without additional libraries or tools. Therefore, TB values derived from the calculated byte offset cannot be fully trusted for precise console output. Manually verify the conversion from bytes to TB when using the GB offset to ensure accuracy.
+   
 ### Usage
 
 1. **Run the script to test**:
