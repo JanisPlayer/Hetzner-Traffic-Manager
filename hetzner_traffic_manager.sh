@@ -4,10 +4,10 @@
 API_TOKEN=""  # Set your Hetzner Cloud API token here
 SERVER_ID=""  # Set your Hetzner server ID without # here
 LIMIT_TB_OFFSET=-1
-LIMIT_TB_OFFSET_FLOAT=1 # 10/5 = 2
+LIMIT_GB_OFFSET=0
 
-# Calculation basis (1 TB = 1024^4 Bytes)
-LIMIT_BYTES_OFFSET=$((LIMIT_TB_OFFSET * 1024**4))/$((LIMIT_TB_OFFSET_FLOAT))
+# Calculation basis (1 TB = 1024^4 Bytes, 1 GB = 1024^3 Bytes)
+LIMIT_BYTES_OFFSET=$((LIMIT_TB_OFFSET * 1024**4 + LIMIT_GB_OFFSET * 1024**3))
 
 # Function to get server information in JSON format
 function get_servers_json() {
