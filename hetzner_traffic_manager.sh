@@ -45,6 +45,11 @@ SERVERS_JSON=$(get_servers_json)
 STATUS=$(get_status)
 TRAFFIC_BYTES=$(get_traffic)
 TRAFFIC_BYTES_LIMIT=$(get_traffic_limit)
+# API bug workaround: ignore invalid traffic limit values
+if [[ -z "$TRAFFIC_BYTES_LIMIT" || "$TRAFFIC_BYTES_LIMIT" == "null" || "$TRAFFIC_BYTES_LIMIT" -eq 0 ]]; then
+    echo "server.included_traffic response is invalid (0/null). Skipping shutdown check (possible Hetzner API bug)."
+    exit 0
+fi
 LIMIT_BYTES=$((TRAFFIC_BYTES_LIMIT+LIMIT_BYTES_OFFSET))
 
 echo "Current outgoing traffic: $((TRAFFIC_BYTES / 1024**3)) GB"
@@ -53,7 +58,7 @@ echo "Outgoing traffic limit: $((TRAFFIC_BYTES_LIMIT / 1024**4)) TB (including o
 # Check server status and if traffic exceeds the limit
 if [[ "$STATUS" == "running" ]]; then
   if ((TRAFFIC_BYTES >= LIMIT_BYTES)); then
-      echo "Traffic limit of $LIMIT_TB TB reached! The server will be shut down."
+      echo "Traffic limit of $((LIMIT_BYTES / 1024**4)) TB reached! The server will be shut down."
       shutdown_server
   else
       echo "Traffic limit not reached yet. Current traffic: $TRAFFIC_BYTES Bytes of $LIMIT_BYTES Bytes"

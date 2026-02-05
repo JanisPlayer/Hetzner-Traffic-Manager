@@ -72,3 +72,23 @@ This script monitors the outgoing traffic of a Hetzner Cloud server. If the outg
 - Manage multiple servers returned by the API query and match them based on their IDs.
 - Apply the offset limit for each server individually, allowing for more flexible traffic monitoring across multiple servers.
 - Better handling of API errors.
+
+---
+
+## ⚠ Known Issue – Hetzner API Traffic Reporting at Start of Month
+
+At the beginning of each month, the Hetzner Cloud API may temporarily return (usually a few hours to a couple of days):
+
+```
+server.included_traffic = 0
+```
+
+During this time, traffic values such as `0 / 0 TB` may be reported. This can cause the script to incorrectly assume that the traffic limit has been reached and shut down the server.
+
+### Workaround
+To prevent accidental shutdowns, the script now skips the shutdown check if `server.included_traffic` is: empty, `null`, `0`.  
+This ensures the server will not be shut down due to invalid API responses.  
+During this period, traffic monitoring is effectively paused because the reported values cannot be trusted.  
+If strict enforcement is required, consider monitoring traffic directly on the server or implementing additional validation logic.  
+This issue was reported to Hetzner support (February 2026) by @matburnham:
+https://github.com/JanisPlayer/Hetzner-Traffic-Manager/issues/1#issuecomment-3832132820
